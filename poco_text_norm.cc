@@ -32,7 +32,7 @@ namespace POCO_TEXTNORM {
         rules_a[pattern] = rule;
       }
       else {
-        cout << "Warning: replicated pattern!" << endl;
+        cout << "Warning: replicated pattern: " << pattern << endl;
       }
     }
   	return;
