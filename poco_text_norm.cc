@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <fstream>
 #include "Poco/RegularExpression.h"
 
 using namespace std;
@@ -29,8 +30,19 @@ namespace POCO_TEXTNORM {
   
 
   void read_rules(const string& input_file_a, map<string, string>& rules_a) {
-    rules_a["\xE2\x80\x99"] = "'";
-
+    // rules_a["\xE2\x80\x99"] = "'";
+    ifstream infile(input_file_a);
+    string pattern, rule;
+    while (infile >> pattern >> rule) {
+      // cout << pattern << "--->" << rule << endl;
+      // only add this if pattern is 
+      if (rules_a.count(pattern) == 0) {
+        rules_a[pattern] = rule;
+      }
+      else {
+        cout << "Warning: replicated pattern!" << endl;
+      }
+    }
   	return;
   }
 
@@ -65,10 +77,10 @@ int main(int argc, char** argv) {
   string input_str = "Who’s amir is 20 abc Who's";
   string output = "";
   map<string, POCO_TEXTNORM::RegExpPtr_Str_Pair> compiled_rules;
-  POCO_TEXTNORM::read_rules("", rules);
-  for (auto & k : rules) {
+  POCO_TEXTNORM::read_rules("rules.txt", rules);
+  /*for (auto & k : rules) {
     cout << k.first << " " << k.second << endl;
-  }
+  }*/
   POCO_TEXTNORM::compile_rules(rules, compiled_rules);
   POCO_TEXTNORM::text_normalize(input_str, output, compiled_rules);
   cout << input_str << "-->" << output << endl;
