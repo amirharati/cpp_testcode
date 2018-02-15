@@ -4,6 +4,7 @@
 #include <memory>
 #include <fstream>
 #include "Poco/RegularExpression.h"
+#include "Poco/String.h"
 
 using namespace std;
 using Poco::RegularExpression;
@@ -26,7 +27,7 @@ namespace POCO_TEXTNORM {
     ifstream infile(input_file_a);
     string pattern, rule;
     while (infile >> pattern >> rule) {
-
+      pattern = Poco::toLower(pattern);
       if (rules_a.count(pattern) == 0) {
         rules_a[pattern] = rule;
       }
@@ -40,7 +41,6 @@ namespace POCO_TEXTNORM {
   void compile_rules(const map<string, string>& rules_a, map<string,
    RegExpPtr_Str_Pair>&compiled_rules_a) {
     for (const auto& k : rules_a) {
-      // RegularExpression *re = new RegularExpression(k.first);
       unique_ptr<RegularExpression> re(new RegularExpression(k.first));
       compiled_rules_a[k.first].first = std::move(re);
       compiled_rules_a[k.first].second = k.second;
@@ -61,7 +61,7 @@ namespace POCO_TEXTNORM {
 // simple test
 int main(int argc, char** argv) {
   map<string, string> rules;
-  string input_str = "⁽‐Who’s vs. Who's";
+  string input_str = "`⁽‐Who’s vs. Who's";
   string output = "";
   map<string, POCO_TEXTNORM::RegExpPtr_Str_Pair> compiled_rules;
   POCO_TEXTNORM::read_rules("rules.txt", rules);
